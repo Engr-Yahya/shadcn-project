@@ -6,7 +6,6 @@ import { Label } from "./ui/label"
 
 interface FormData {
   firstName: string
-  middleName: string
   lastName: string
 }
 
