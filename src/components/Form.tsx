@@ -5,10 +5,6 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-// interface FormData {
-//   firstName: string
-//   lastName: string
-// }
 
 const userFormSchema = z
   .object({
@@ -17,6 +13,7 @@ const userFormSchema = z
     email: z.string().email("Invalid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),
+    newsLetter: z.boolean(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -29,6 +26,7 @@ const Form = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(userFormSchema),
@@ -36,45 +34,139 @@ const Form = () => {
 
   function onSubmit(data: FormData) {
     console.log("user Input:", data)
+    reset()
   }
 
   return (
-    <Card className="p-8">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <Label className="mb-2">FirstName: </Label>
+    <Card className="mx-auto w-full max-w-md rounded-2xl border p-8 shadow-xl">
+      <h2 className="mb-6 text-center text-2xl font-semibold">
+        Create Account
+      </h2>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* First Name */}
+        <div className="space-y-2">
+          <Label className={errors.firstName ? "text-destructive" : ""}>
+            First Name
+          </Label>
           <Input
-            className={`bg-white text-black ${errors.firstName ? "border-2 border-destructive" : ""}`}
+            placeholder="Enter your first name"
+            className={`rounded bg-background ${
+              errors.firstName
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }`}
             {...register("firstName")}
           />
-          {errors.firstName && <p> {errors.firstName.message} </p>}
+          {errors.firstName && (
+            <p className="text-sm text-destructive">
+              {errors.firstName.message}
+            </p>
+          )}
         </div>
-        <br />
-        <div>
-          <Label className="mb-2">LastName: </Label>
-          <Input className="bg-white text-black" {...register("lastName")} />
-          {errors.lastName && <p> {errors.lastName.message} </p>}
+
+        {/* Last Name */}
+        <div className="space-y-2">
+          <Label className={errors.lastName ? "text-destructive" : ""}>
+            Last Name
+          </Label>
+          <Input
+            placeholder="Enter your last name"
+            className={`rounded bg-background ${
+              errors.lastName
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }`}
+            {...register("lastName")}
+          />
+          {errors.lastName && (
+            <p className="text-sm text-destructive">
+              {errors.lastName.message}
+            </p>
+          )}
         </div>
-        <br />
-        <div>
-          <Label className="mb-2">Email: </Label>
-          <Input className="bg-white text-black" {...register("email")} />
-          {errors.email && <p> {errors.email.message} </p>}
+
+        {/* Email */}
+        <div className="space-y-2">
+          <Label className={errors.email ? "text-destructive" : ""}>
+            Email
+          </Label>
+          <Input
+            type="email"
+            placeholder="example@gmail.com"
+            className={`rounded bg-background ${
+              errors.email
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }`}
+            {...register("email")}
+          />
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
         </div>
-        <br />
-        <div>
-          <Label className="mb-2">Password: </Label>
-          <Input className="bg-white text-black" {...register("password")} />
-          {errors.password && <p> {errors.password.message} </p>}
+
+        {/* Password */}
+        <div className="space-y-2">
+          <Label className={errors.password ? "text-destructive" : ""}>
+            Password
+          </Label>
+          <Input
+            type="password"
+            placeholder="••••••••"
+            className={`rounded bg-background ${
+              errors.password
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }`}
+            {...register("password")}
+          />
+          {errors.password && (
+            <p className="text-sm text-destructive">
+              {errors.password.message}
+            </p>
+          )}
         </div>
-        <br />
-        <div>
-          <Label className="mb-2">Confirm Password: </Label>
-          <Input className="bg-white text-black" {...register("confirmPassword")} />
-          {errors.confirmPassword && <p> {errors.confirmPassword.message} </p>}
+
+        {/* Confirm Password */}
+        <div className="space-y-2">
+          <Label className={errors.confirmPassword ? "text-destructive" : ""}>
+            Confirm Password
+          </Label>
+          <Input
+            type="password"
+            placeholder="Re-enter password"
+            className={`rounded bg-background ${
+              errors.confirmPassword
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }`}
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p className="text-sm text-destructive">
+              {errors.confirmPassword.message}
+            </p>
+          )}
         </div>
-        <Button type="submit" className="mx-auto mt-4 w-fit px-6 py-2">
-          Submit
+
+        {/* Newsletter */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            className="h-4 w-4 accent-primary"
+            {...register("newsLetter")}
+          />
+          <Label className="text-sm">Subscribe to newsletter</Label>
+        </div>
+
+        {/* Submit */}
+        <Button
+          variant="secondary"
+          type="submit"
+          className="mt-2 w-full text-base font-medium"
+        >
+          Create Account
         </Button>
       </form>
     </Card>
